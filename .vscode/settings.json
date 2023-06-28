@@ -1,0 +1,18 @@
+{
+  "files.associations": {
+    "*.js": "javascript",
+    "vector": "cpp",
+    "__mutex_base": "cpp",
+    "atomic": "cpp",
+    "iostream": "cpp",
+    "__split_buffer": "cpp",
+    "array": "cpp",
+    "forward_list": "cpp",
+    "list": "cpp",
+    "queue": "cpp",
+    "string": "cpp",
+    "string_view": "cpp",
+    "ios": "cpp",
+    "iosfwd": "cpp"
+  }
+}
