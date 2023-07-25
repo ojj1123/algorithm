@@ -16,7 +16,7 @@ int binarySearch(int, int, int);
 int main() {
     ios::sync_with_stdio(0), cin.tie(0), cout.tie(0);
     init();
-    cout << binarySearch(1, maxTree, m);
+    cout << binarySearch(0, maxTree, m);
 }
 
 void init() {
