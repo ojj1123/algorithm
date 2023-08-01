@@ -8,15 +8,12 @@ using namespace std;
 #define endl '\n'
 
 const int VMAX = 1e5;
-const int EMAX = 1e6;
 
 int v, e;
 vector<int> graph[VMAX + 2];
-pair<int, int> edgeList[EMAX + 2];
-int vis[EMAX + 2];
-bool isCut[EMAX + 2];
-int order;
 vector<pair<int, int>> res;
+int vis[VMAX + 2];
+int order;
 
 void init();
 int dfs(int, int);
@@ -42,11 +39,6 @@ void init() {
         cin >> a >> b;
         graph[a].push_back(b);
         graph[b].push_back(a);
-        if (a > b) {
-            edgeList[i] = {a, b};
-        } else {
-            edgeList[i] = {b, a};
-        }
     }
 }
 
