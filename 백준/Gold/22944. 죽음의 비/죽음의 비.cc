@@ -1,3 +1,7 @@
+// Backtracking 풀이
+
+#include <math.h>
+
 #include <algorithm>
 #include <iostream>
 #include <map>
@@ -8,33 +12,39 @@
 
 using namespace std;
 #define endl '\n'
+#define X first
+#define Y second
 
 const int MAX = 500;
+const int INF = 1e9;
 
 int dx[] = {1, 0, -1, 0};
 int dy[] = {0, 1, 0, -1};
 
 int n, h, d;
-int startX, startY;
+int startX, startY, endX, endY;
 char board[MAX + 2][MAX + 2];
-bool vis[12][MAX + 2][MAX + 2];
-
-void init();
-void solve();
+bool vis[MAX + 2][MAX + 2];
+vector<pair<int, int>> umbs;
+int ans = INF;
 
 struct Node {
     int x;
     int y;
-    int hp;
-    int umbIdx;
-    int umb;
+    int health;
+    int durability;
     int dist;
 };
+
+void init();
+void dfs(Node);
+int minimumDist(int, int, int, int);
 
 int main() {
     ios::sync_with_stdio(0), cin.tie(0), cout.tie(0);
     init();
-    solve();
+    dfs({startX, startY, h, 0, 0});
+    cout << (ans == INF ? -1 : ans) << endl;
 }
 
 void init() {
@@ -46,56 +56,47 @@ void init() {
             if (temp == 'S') {
                 startX = i;
                 startY = j;
+            } else if (temp == 'E') {
+                endX = i;
+                endY = j;
+            } else if (temp == 'U') {
+                umbs.push_back({i, j});
             }
+
             board[i][j] = temp;
         }
     }
 }
 
-void solve() {
-    queue<Node> q;
-    int nUmbIdx = 0;
-
-    vis[0][startX][startY] = true;
-    // {x, y, hp, umbIdx, umb, dist}
-    q.push({startX, startY, h, 0, 0, 0});
-
-    while (!q.empty()) {
-        auto cur = q.front();
-        q.pop();
-
-        for (int dir = 0; dir < 4; dir++) {
-            int nx = cur.x + dx[dir];
-            int ny = cur.y + dy[dir];
-            int nUmb = cur.umb;
-            int nHp = cur.hp;
-            if (nx < 0 || nx >= n || ny < 0 || ny >= n) continue;
-            if (vis[cur.umbIdx][nx][ny]) continue;
-
-            if (board[nx][ny] == 'E') {
-                cout << cur.dist + 1 << endl;
-                return;
-            }
-
-            if (board[nx][ny] == '.') {
-                if (nUmb == 0) {
-                    nHp--;
-                } else {
-                    nUmb--;
-                }
-            } else if (board[nx][ny] == 'U') {
-                // 우산 있는 곳도 비 맞음
-                nUmb = d - 1;
-                cur.umbIdx = ++nUmbIdx;
-                board[nx][ny] = '.';
-            }
-
-            if (nHp == 0) continue;
-            vis[cur.umbIdx][nx][ny] = true;
-            // {x, y, hp, umbIdx, umb, dist}
-            q.push({nx, ny, nHp, cur.umbIdx, nUmb, cur.dist + 1});
-        }
+// cur = {x, y, health, durability, dist}
+void dfs(Node cur) {
+    int dist = minimumDist(cur.x, cur.y, endX, endY);
+    // 끝까지 바로 갈 수 있으면
+    if (dist <= cur.health + cur.durability) {
+        // 그냥 바로 감(가장 빠름)
+        ans = min(ans, dist + cur.dist);
+        return;
     }
 
-    cout << -1 << endl;
+    // 우산의 조합에 따라 백트래킹 수행
+    // S -> E
+    // S -> U1 -> E
+    // S -> U1 -> U2 -> E
+    // ...
+    for (auto umb : umbs) {
+        if (vis[umb.X][umb.Y]) continue;
+        int dist = minimumDist(umb.X, umb.Y, cur.x, cur.y);
+        if (dist > cur.health + cur.durability) continue;
+        vis[umb.X][umb.Y] = true;
+        if (dist <= cur.durability) {
+            dfs({umb.X, umb.Y, cur.health, d, dist + cur.dist});
+        } else {
+            dfs({umb.X, umb.Y, cur.health + cur.durability - dist, d, dist + cur.dist});
+        }
+        vis[umb.X][umb.Y] = false;
+    }
+}
+
+int minimumDist(int x1, int y1, int x2, int y2) {
+    return abs(x1 - x2) + abs(y1 - y2);
 }
