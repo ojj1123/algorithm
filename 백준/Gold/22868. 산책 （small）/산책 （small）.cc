@@ -1,5 +1,3 @@
-#include <math.h>
-
 #include <algorithm>
 #include <iostream>
 #include <map>
@@ -10,8 +8,6 @@
 
 using namespace std;
 #define endl '\n'
-#define X first
-#define Y second
 
 const int MAX = 1e4;
 
@@ -78,10 +74,6 @@ void solve() {
     // 최초 경로 찾기
     dfs(st);
     isFirstVisited[st] = false;
-    // for (int i = 1; i <= n; i++) {
-    //     if (isFirstVisited[i]) cout << i << ' ';
-    // }
-    // cout << endl;
 
     // en -> st bfs
     fill(vis, vis + n + 2, -1);
@@ -109,7 +101,6 @@ void solve() {
     cout << ans << endl;
 }
 
-bool exitFlag = false;
 bool dfs(int cur) {
     vis2[cur] = true;
 
