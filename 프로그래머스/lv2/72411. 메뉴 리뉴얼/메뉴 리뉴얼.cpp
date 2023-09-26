@@ -6,38 +6,35 @@
 #include <iostream>
 
 using namespace std;
-map<string, pair<int,int>> check;
+map<string, int> check;
 int maxCntPerStrlen[12];
-bool checkCourseCnt[12];
-void getComb(string, int, string, int, int, int);
+
+void combination(string, string, int, int);
 
 vector<string> solution(vector<string> orders, vector<int> course) {
     vector<string> answer;
-    int courseLen = course.size();
-    for(int i = 0;i < courseLen;i++) {
-        checkCourseCnt[course[i]] = true;
+    
+    for(string &order: orders) {
+        sort(order.begin(), order.end());
     }
-    int len = orders.size();
-    for(int i = 0;i < len;i++) {
-        sort(orders[i].begin(), orders[i].end());
-        // cout<<orders[i]<<endl;
-        int orderLen = orders[i].length();
-        for(int j = 2;j <= orderLen;j++) {
-            getComb(orders[i], orderLen, "", j, 0, 0);
+    
+    for(string order: orders) {
+        for(int cnt: course) {
+            combination(order, "", cnt, 0);
         }
     }
     
     for(auto item: check) {
-        int cnt = item.second.first;
-        int strLen = item.second.second;
-        maxCntPerStrlen[strLen] = max(maxCntPerStrlen[strLen], cnt);
+        int len = item.first.length();
+        int cnt = item.second;
+        maxCntPerStrlen[len] = max(maxCntPerStrlen[len], cnt);
     }
     
     for(auto item: check) {
         string str = item.first;
-        int cnt = item.second.first;
-        int strLen = item.second.second;
-        if(maxCntPerStrlen[strLen] >= 2 && checkCourseCnt[strLen] && maxCntPerStrlen[strLen] == cnt) {
+        int len = str.length();
+        int cnt = item.second;
+        if(maxCntPerStrlen[len] >= 2 && maxCntPerStrlen[len] == cnt) {
             answer.push_back(str);
         }
     }
@@ -45,19 +42,18 @@ vector<string> solution(vector<string> orders, vector<int> course) {
     return answer;
 }
 
-void getComb(string order, int orderLen, string str, int m, int cnt, int cur) {
-    if(cnt >= m) {
-        if(check.find(str) != check.end()) {
-            check[str].first++;
+void combination(string order, string course, int cnt, int cur) {
+    if(course.length() >= cnt) {
+        if(check.find(course) != check.end()) {
+            check[course]++;
         } else {
-            check[str].first = 1;
-            check[str].second = m;
+            check[course] = 1;
         }
         return;
     }
-    for(int i = cur;i < orderLen;i++) {
-        str += order[i];
-        getComb(order, orderLen, str, m, cnt + 1, i + 1);
-        str.pop_back();
+    for(int i = cur;i < order.length();i++) {
+        course += order[i];
+        combination(order, course, cnt, i + 1);
+        course.pop_back();
     }
 }
