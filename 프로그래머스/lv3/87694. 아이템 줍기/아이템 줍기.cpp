@@ -2,7 +2,6 @@
 #include <vector>
 #include <queue>
 #include <utility>
-#include <iostream>
 
 using namespace std;
 
@@ -75,7 +74,9 @@ void bfs(int characterX, int characterY, int itemX, int itemY) {
         int cy = cur.second;
         
         q.pop();
-        cout<<cx<<' '<<cy<<endl;
+
+        if(cx == itemX && cy == itemY) break;
+        
         for(int dir = 0; dir < 4;dir++) {
             int nx = cx + dx[dir];
             int ny = cy + dy[dir];
