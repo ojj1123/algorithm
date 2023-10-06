@@ -31,11 +31,9 @@ int solution(int n, vector<vector<int>> wires) {
     dfs(1, -1);
     
     for(int i = 1;i <= n;i++) {
-        for(int j: tree[i]) {
-            int left = siz[j];
-            int right = n - siz[j];
-            answer = min(answer, abs(left - right));
-        }
+        int left = siz[i];
+        int right = n - siz[i];
+        answer = min(answer, abs(left - right));
     }
     
     return answer;
