@@ -6,20 +6,17 @@
 using namespace std;
 
 const int INF = 1e9;
-bool vis[102];
+int siz[102];
 vector<int> tree[102];
-int ret;
 
-int dfs(int start, int no) {
-    vis[start] = true;
+void dfs(int start, int prev) {
+    siz[start] = 1;
     
     for(int next: tree[start]) {
-        if(vis[next]) continue;
-        if(next == no) continue;
-        dfs(next, no);
-        ret++;
+        if(next == prev) continue;
+        dfs(next, start);
+        siz[start] += siz[next];
     }
-    return ret;
 }
 
 int solution(int n, vector<vector<int>> wires) {
@@ -31,18 +28,14 @@ int solution(int n, vector<vector<int>> wires) {
         tree[b].push_back(a);
     }
     
-    for(int i = 0;i < n - 1;i++) {
-        fill(vis, vis + n + 1, false);
-        
-        int a = wires[i][0];
-        int b = wires[i][1];
-        
-        ret = 1;
-        int cnt1 = dfs(a, b);
-        ret = 1;
-        int cnt2 = dfs(b, a);
-        
-        answer = min(answer, abs(cnt1 - cnt2));
+    dfs(1, -1);
+    
+    for(int i = 1;i <= n;i++) {
+        for(int j: tree[i]) {
+            int left = siz[j];
+            int right = n - siz[j];
+            answer = min(answer, abs(left - right));
+        }
     }
     
     return answer;
