@@ -31,9 +31,13 @@ function solution(dice) {
                     }
                     startB++
                 }
-                count += arrB.length - startB + 1
+                if(startB === arrB.length) {
+                    count += 0
+                } else {
+                    count += arrB.length - startB
+                }
             }
-            
+            console.log(count)
             if(maxVal < count) {
                 maxVal = count
                 answer = []
